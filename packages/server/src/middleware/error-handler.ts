@@ -5,12 +5,30 @@ function scrub(value: string): string {
   return value.replace(/(sk-[A-Za-z0-9_-]+)|(AIza[A-Za-z0-9_-]+)/g, '[redacted]');
 }
 
+function isMalformedJsonError(error: unknown): boolean {
+  return (
+    error instanceof SyntaxError &&
+    'type' in error &&
+    error.type === 'entity.parse.failed'
+  );
+}
+
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof AppError) {
     res.status(err.status || errorStatusByCode[err.code]).json({
       error: {
         code: err.code,
         message: scrub(err.message),
+      },
+    });
+    return;
+  }
+
+  if (isMalformedJsonError(err)) {
+    res.status(400).json({
+      error: {
+        code: ErrorCode.INVALID_REQUEST,
+        message: 'Malformed JSON request body',
       },
     });
     return;

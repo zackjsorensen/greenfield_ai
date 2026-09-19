@@ -8,6 +8,8 @@ import { createApp } from '../src/create-app.js';
 function buildApp(overrides?: {
   transcribe?: TranscriptionProvider['transcribe'];
   translate?: TranslationProvider['translate'];
+  serveStatic?: boolean;
+  staticRoot?: string;
 }) {
   const transcriber: TranscriptionProvider = {
     name: 'fake-stt',
@@ -39,6 +41,8 @@ function buildApp(overrides?: {
     },
     maxUploadBytes: 1024,
     corsOrigins: ['http://localhost:5173'],
+    serveStatic: overrides?.serveStatic,
+    staticRoot: overrides?.staticRoot,
   });
 }
 
@@ -85,6 +89,34 @@ describe('HTTP routes', () => {
       .send({ text: 'hello', targetLanguage: 'xx' });
     expect(response.status).toBe(400);
     expect(response.body.error.code).toBe('INVALID_REQUEST');
+  });
+
+  it('POST /api/translate rejects malformed JSON without exposing parser details', async () => {
+    const response = await request(buildApp())
+      .post('/api/translate')
+      .set('Content-Type', 'application/json')
+      .send('{"text":');
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({
+      error: {
+        code: 'INVALID_REQUEST',
+        message: 'Malformed JSON request body',
+      },
+    });
+  });
+
+  it('returns a JSON 404 for unknown API routes when static serving is enabled', async () => {
+    const response = await request(
+      buildApp({ serveStatic: true, staticRoot: '/tmp/nonexistent-web-dist' }),
+    ).get('/api/unknown');
+    expect(response.status).toBe(404);
+    expect(response.type).toBe('application/json');
+    expect(response.body).toEqual({
+      error: {
+        code: 'NOT_FOUND',
+        message: 'API route not found',
+      },
+    });
   });
 
   it('maps provider failures without leaking secrets', async () => {

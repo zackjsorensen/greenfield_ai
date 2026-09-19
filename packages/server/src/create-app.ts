@@ -1,7 +1,7 @@
 import express, { type Express } from 'express';
 import cors from 'cors';
 import type { SpeechTranslationPipeline } from '@app/core';
-import type { PublicConfigResponse } from '@app/shared';
+import { ErrorCode, type PublicConfigResponse } from '@app/shared';
 import path from 'node:path';
 import { errorHandler } from './middleware/error-handler.js';
 import { createUploader } from './middleware/upload.js';
@@ -29,6 +29,14 @@ export function createApp(deps: AppDeps): Express {
   app.use('/api', createConfigRouter(deps.publicConfig));
   app.use('/api', createTranscribeRouter(deps.pipeline, upload));
   app.use('/api', createTranslateRouter(deps.pipeline));
+  app.use('/api', (_req, res) => {
+    res.status(404).json({
+      error: {
+        code: ErrorCode.NOT_FOUND,
+        message: 'API route not found',
+      },
+    });
+  });
 
   if (deps.serveStatic && deps.staticRoot) {
     app.use(express.static(deps.staticRoot));

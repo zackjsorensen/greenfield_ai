@@ -3,6 +3,7 @@ export const ErrorCode = {
   AUDIO_TOO_LARGE: 'AUDIO_TOO_LARGE',
   PROVIDER_ERROR: 'PROVIDER_ERROR',
   INVALID_REQUEST: 'INVALID_REQUEST',
+  NOT_FOUND: 'NOT_FOUND',
   CONFIG_ERROR: 'CONFIG_ERROR',
 } as const;
 
@@ -27,5 +28,6 @@ export const errorStatusByCode: Record<ErrorCode, number> = {
   AUDIO_TOO_LARGE: 413,
   PROVIDER_ERROR: 502,
   INVALID_REQUEST: 400,
+  NOT_FOUND: 404,
   CONFIG_ERROR: 500,
 };

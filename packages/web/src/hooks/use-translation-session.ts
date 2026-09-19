@@ -125,6 +125,8 @@ export function useTranslationSession() {
           return;
         }
 
+        setTranslation('');
+        setTranslationMeta(undefined);
         setStatus('translating');
         const translated = await translateText({
           text: english,
