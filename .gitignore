@@ -1,0 +1,15 @@
+node_modules
+dist
+build
+coverage
+*.tsbuildinfo
+.DS_Store
+config/config.json
+.env
+.env.local
+.env.*.local
+packages/web/.env
+packages/web/.env.local
+.vite
+.eslintcache
+.pnpm-debug.log
