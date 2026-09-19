@@ -1,0 +1,30 @@
+{
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8787,
+    "corsOrigins": ["http://localhost:5173"],
+    "serveStatic": false
+  },
+  "apiKeys": {
+    "openai": "",
+    "gemini": ""
+  },
+  "providers": {
+    "transcription": {
+      "active": "openai",
+      "openai": { "model": "gpt-4o-transcribe" },
+      "gemini": { "model": "gemini-2.5-flash" }
+    },
+    "translation": {
+      "active": "gemini",
+      "gemini": { "model": "gemini-2.5-flash" },
+      "openai": { "model": "gpt-4o-mini" }
+    }
+  },
+  "audio": {
+    "maxUploadBytes": 25000000
+  },
+  "languages": {
+    "default": "es"
+  }
+}

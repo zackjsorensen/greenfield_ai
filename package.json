@@ -1,0 +1,31 @@
+{
+  "name": "greenfield-ai",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "predev": "pnpm --filter @app/shared --filter @app/core build",
+    "dev": "concurrently -n server,web -c blue,green \"pnpm --filter @app/server dev\" \"pnpm --filter @app/web dev\"",
+    "build": "pnpm --filter @app/shared --filter @app/core --filter @app/server --filter @app/web build",
+    "pretest": "pnpm --filter @app/shared --filter @app/core build",
+    "test": "pnpm --filter @app/shared --filter @app/core --filter @app/server --filter @app/web test",
+    "lint": "eslint .",
+    "typecheck": "pnpm --filter @app/shared --filter @app/core --filter @app/server --filter @app/web typecheck",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.19.1"
+  }
+}
